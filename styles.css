@@ -119,3 +119,5 @@ input, select { font: inherit; min-height: 38px; max-width: 100%; padding: 6px 9
 @media (max-width: 560px) { main { padding: 24px 16px; } .header-inner { padding: 14px 16px; } dl > div { grid-template-columns: 1fr; gap: 3px; } #status { margin-left: 0; flex-basis: 100%; } }
 
 #macro-source-notice { padding: 14px 16px; border: 2px solid #b68127; border-radius: 5px; background: #fff8e6; color: #674713; line-height: 1.7; font-size: 14px; font-weight: 500; }
+
+.macro-source-editor-host .CodeMirror .cm-comment { color: #7C6F91; font-style: italic; }
