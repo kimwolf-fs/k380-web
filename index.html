@@ -1,0 +1,147 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>K380 浏览器配置</title>
+  <link rel="stylesheet" href="./vendor/codemirror-5.65.21/lib/codemirror.css">
+  <link rel="stylesheet" href="./vendor/codemirror-5.65.21/addon/dialog/dialog.css">
+  <link rel="stylesheet" href="./vendor/codemirror-5.65.21/addon/fold/foldgutter.css">
+  <link rel="stylesheet" href="./styles.css">
+  <script src="./vendor/codemirror-5.65.21/lib/codemirror.js" defer></script>
+  <script src="./vendor/codemirror-5.65.21/addon/dialog/dialog.js" defer></script>
+  <script src="./vendor/codemirror-5.65.21/addon/search/searchcursor.js" defer></script>
+  <script src="./vendor/codemirror-5.65.21/addon/search/search.js" defer></script>
+  <script src="./vendor/codemirror-5.65.21/addon/fold/foldcode.js" defer></script>
+  <script src="./vendor/codemirror-5.65.21/addon/fold/foldgutter.js" defer></script>
+  <script src="./vendor/codemirror-5.65.21/addon/fold/indent-fold.js" defer></script>
+  <script src="./vendor/codemirror-5.65.21/addon/selection/active-line.js" defer></script>
+  <script src="./macro-source-editor.js" defer></script>
+  <script type="module" src="./app.mjs?v=20261009-macro-backup-1"></script>
+</head>
+<body>
+  <header>
+    <div class="header-inner">
+      <span class="brand">K380</span>
+      <span class="header-label">浏览器配置</span>
+    </div>
+  </header>
+  <main>
+    <section class="connection-panel" aria-labelledby="connection-heading">
+      <div class="section-heading">
+        <h1 id="connection-heading">设备连接</h1>
+        <span class="mode">Web Serial</span>
+      </div>
+      <div class="toolbar">
+        <button id="connect" type="button">连接键盘</button>
+        <button id="disconnect" type="button" disabled>断开连接</button>
+        <span id="status" role="status" aria-live="polite">检查浏览器...</span>
+      </div>
+      <details id="connection-details" class="collapsible-details">
+        <summary>连接信息</summary>
+        <dl id="details">
+          <div><dt>USB 设备</dt><dd id="usb-id">未连接</dd></div>
+          <div><dt>协议版本</dt><dd id="protocol-version">-</dd></div>
+          <div><dt>预设</dt><dd id="preset-count">-</dd></div>
+          <div><dt>层数</dt><dd id="layer-count">-</dd></div>
+          <div><dt>按键数</dt><dd id="key-count">-</dd></div>
+          <div><dt>每个预设的宏槽位</dt><dd id="macro-slots">-</dd></div>
+          <div><dt>宏程序上限</dt><dd id="macro-limit">-</dd></div>
+        </dl>
+      </details>
+    </section>
+
+    <section class="preset-panel" aria-labelledby="presets-heading">
+      <div class="preset-heading">
+        <h2 id="presets-heading">按键预设</h2>
+        <div id="presets" class="preset-tabs" role="tablist" aria-label="按键预设"></div>
+        <span id="binding-summary" class="binding-summary">
+          <span class="binding-summary-group"><strong>默认层：</strong><span id="default-bindings">-</span></span>
+          <span class="binding-summary-group"><strong>Fn 层：</strong><span id="fn-bindings">-</span></span>
+        </span>
+      </div>
+      <div class="preset-actions">
+        <label>预设名称 <input id="preset-name" type="text" maxlength="32" autocomplete="off"></label>
+        <span id="name-change-status" role="status" aria-live="polite"></span>
+        <button id="save-name" type="button" disabled>保存名称</button>
+        <button id="switch-preset" type="button" disabled>切换到此预设</button>
+        <button id="restore-preset" type="button" disabled>恢复当前预设出厂默认</button>
+        <button id="restore-all" class="danger" type="button" disabled>恢复全部出厂默认</button>
+      </div>
+    </section>
+
+    <section class="keyboard-panel" aria-labelledby="keys-heading">
+      <div class="section-heading keyboard-heading">
+        <h2 id="keys-heading">键盘布局</h2>
+        <label>编辑层 <select id="layer-select"><option value="0">默认层</option><option value="1">Fn 层</option></select></label>
+        <span id="change-count" role="status"></span>
+        <button id="save-bindings" type="button" disabled>保存按键修改</button>
+        <button id="discard" type="button" disabled>放弃修改</button>
+      </div>
+      <div id="editor" hidden>
+        <div class="key-tools">
+          <label>查找按键 <input id="key-filter" type="search" placeholder="例如 A、Home、Fn+1" aria-controls="keyboard-layout"></label>
+          <label>选择输出 <input id="usage-search" type="search" placeholder="例如 Home、左 Ctrl、224"></label>
+          <span id="key-filter-status" role="status" aria-live="polite"></span>
+        </div>
+        <div class="keyboard-workbench">
+          <div id="keyboard-layout" class="keyboard-layout" aria-label="键盘布局"></div>
+          <aside id="key-editor" class="key-editor" aria-label="单键编辑">
+            <div class="editor-heading"><h3>单键编辑</h3><button id="restore-key" class="danger" type="button">仅恢复此键默认</button></div>
+            <dl>
+              <div><dt>物理按键</dt><dd id="physical-key">-</dd></div>
+              <div><dt>默认输出</dt><dd id="default-key">-</dd></div>
+              <div><dt>当前输出</dt><dd id="current-key">-</dd></div>
+            </dl>
+            <label class="binding-picker">改为 <select id="binding-select"></select></label>
+            <div class="capture-row">
+              <button id="capture" type="button">按实体键选择</button>
+              <span class="save-hint">修改只保留在页面中，点击“保存按键修改”后写入键盘。</span>
+            </div>
+          </aside>
+        </div>
+      </div>
+    </section>
+
+    <section class="macro-workspace" aria-labelledby="macro-heading">
+      <div class="macro-heading">
+        <h2 id="macro-heading">宏定义</h2>
+        <span class="mode">当前预设</span>
+      </div>
+      <div class="macro-workbench">
+        <nav id="macro-slots-list" class="macro-slots-list" aria-label="宏槽位"></nav>
+        <section id="macro-editor" class="macro-editor" aria-label="宏编辑">
+          <div class="macro-settings">
+            <label>名称 <input id="macro-name" type="text" maxlength="32"></label>
+            <label>触发方式 <select id="macro-trigger">
+              <option value="0">按下执行一次</option>
+              <option value="1">按住执行，松开停止</option>
+              <option value="2">按下开始，再按停止</option>
+              <option value="3">按下执行指定次数</option>
+            </select></label>
+            <label id="macro-count-field" hidden>次数 <input id="macro-count" type="number" min="1" max="65535" value="1"></label>
+          </div>
+          <p id="macro-source-status" role="status"></p>
+          <div class="macro-test-layout">
+            <div class="macro-source-editor-shell">
+              <div class="macro-source-editor-host" aria-label="宏源码"></div>
+            </div>
+          </div>
+          <div class="macro-actions">
+            <button id="compile-macro" type="button">编译宏</button>
+            <button id="test-macro" type="button" disabled>测试宏</button>
+            <button id="stop-macro" class="danger" type="button" disabled>停止测试</button>
+            <button id="retry-macro-state" type="button" hidden disabled>重新确认状态</button>
+            <button id="save-macro" type="button" disabled>保存宏</button>
+            <button id="import-macro" type="button" disabled>导入宏</button>
+            <button id="export-macro" type="button" disabled>导出宏</button>
+            <input id="macro-file" type="file" accept=".json,application/json" hidden>
+            <span id="compile-status" role="status" aria-live="polite"></span>
+          </div>
+          <p id="macro-run-status" role="status" aria-live="polite"></p>
+        </section>
+      </div>
+    </section>
+  </main>
+</body>
+</html>
