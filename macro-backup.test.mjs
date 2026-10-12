@@ -42,7 +42,7 @@ function importPage() {
   const start = app.indexOf('async function importMacroBackup(file)');
   const end = app.indexOf('\nfunction exportMacroBackup()', start);
   assert.ok(start >= 0 && end > start, 'page must expose the guarded import handler');
-  const elements = new Map(['#macro-name', '#macro-trigger', '#macro-count', '#macro-count-field', '#macro-source-status'].map(id => [id, {value: '', hidden: false, textContent: ''}]));
+  const elements = new Map(['#macro-name', '#macro-trigger', '#macro-count', '#macro-count-field', '#macro-source-status', '#macro-source-notice'].map(id => [id, {value: '', hidden: false, textContent: ''}]));
   const page = {connection: {}, busy: false, macroRun: null, macroRecording: null, macroBaseline: {source: 'saved'},
     macroEditor: {}, macroClearRequested: false, macroSourceUnavailable: true,
     selectedPreset: 0, selectedMacroSlot: 1, macroGate: {capture: c => c, isCurrent: c => c.slot === page.selectedMacroSlot},

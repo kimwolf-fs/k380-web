@@ -17,7 +17,7 @@
   <script src="./vendor/codemirror-5.65.21/addon/fold/indent-fold.js" defer></script>
   <script src="./vendor/codemirror-5.65.21/addon/selection/active-line.js" defer></script>
   <script src="./macro-source-editor.js" defer></script>
-  <script type="module" src="./app.mjs?v=20261009-macro-backup-1"></script>
+  <script type="module" src="./app.mjs?v=20261012-source-notice-1"></script>
 </head>
 <body>
   <header>
@@ -122,6 +122,7 @@
             <label id="macro-count-field" hidden>次数 <input id="macro-count" type="number" min="1" max="65535" value="1"></label>
           </div>
           <p id="macro-source-status" role="status"></p>
+          <aside id="macro-source-notice" role="status" hidden></aside>
           <div class="macro-test-layout">
             <div class="macro-source-editor-shell">
               <div class="macro-source-editor-host" aria-label="宏源码"></div>

@@ -297,6 +297,7 @@ function clearMacroDetails() {
   $('#macro-count').value = '1';
   $('#macro-count-field').hidden = true;
   $('#macro-source-status').textContent = '';
+  $('#macro-source-notice').hidden = true;
   $('#macro-run-status').textContent = '';
   $('#compile-status').textContent = '';
   renderMacroTargetOptions();
@@ -331,6 +332,11 @@ async function loadMacro(slot) {
   $('#macro-count-field').hidden = stored.trigger !== 3;
   $('#macro-source-status').textContent = !stored.package.length ? '空宏槽位' :
     source !== null ? '已从本机恢复与设备匹配的源码' : '设备中有宏程序，本机没有匹配的源码';
+  const notice = $('#macro-source-notice');
+  notice.hidden = !macroSourceUnavailable;
+  notice.textContent = macroSourceUnavailable
+    ? `设备已有宏（程序包 ${stored.package.length} 字节），此槽位不是空宏。当前浏览器本机没有匹配源码，因此编辑框为空。请点击“导入宏”恢复 JSON 源码备份，或重新编辑；只有点击“保存宏”才会替换设备中的宏。`
+    : '';
   macroBaseline = macroSnapshot();
   renderMacroSlots();
   return true;
@@ -942,6 +948,7 @@ async function importMacroBackup(file) {
     macroSourceUnavailable = false;
     macroClearRequested = true;
     $('#macro-source-status').textContent = '已导入源码备份';
+    $('#macro-source-notice').hidden = true;
     compileMacroSource(imported.source);
     setControls();
     setMacroRunStatus('宏文件已导入为编辑草稿，未写入键盘；点击保存宏后写入。');
@@ -1060,6 +1067,7 @@ $('#save-macro').addEventListener('click', async () => {
     macroNames[selectedMacroSlot] = name;
     macroSourceUnavailable = false;
     macroClearRequested = false;
+    $('#macro-source-notice').hidden = true;
     macroBaseline = macroSnapshot();
     $('#macro-source-status').textContent = warning ? '本机源码未保存' :
       compiled.empty ? '空宏槽位' : '已从本机恢复与设备匹配的源码';

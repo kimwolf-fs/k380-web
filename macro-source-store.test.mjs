@@ -379,10 +379,14 @@ test('device programs stay blank without exact local source and restore only ver
   await page.elements.get('#macro-slots-list').children[3].listeners.click();
   assert.equal(page.app.readMacroEditorSource(), '');
   assert.match(page.elements.get('#macro-source-status').textContent, /本机没有匹配/);
+  assert.equal(page.elements.get('#macro-source-notice').hidden, false);
+  assert.match(page.elements.get('#macro-source-notice').textContent, /设备已有宏/);
+  assert.match(page.elements.get('#macro-source-notice').textContent, /程序包.*字节/);
   saveSource(page.local, 0, 3, compiled.packageCrc32, source);
   page.app.invalidateMacroSelection();
   await page.elements.get('#macro-slots-list').children[3].listeners.click();
   assert.equal(page.app.readMacroEditorSource(), source);
+  assert.equal(page.elements.get('#macro-source-notice').hidden, true);
 });
 
 for (const change of ['name', 'binding']) {

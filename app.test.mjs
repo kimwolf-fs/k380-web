@@ -165,7 +165,7 @@ test('clearing macro details removes the stop status before the next slot contex
   const status = {textContent: '', classList: {toggle() {}}};
   let stopCalls = 0;
   for (const selector of ['#macro-name', '#macro-target', '#macro-trigger', '#macro-count',
-    '#macro-count-field', '#macro-source-status', '#compile-status']) {
+    '#macro-count-field', '#macro-source-status', '#macro-source-notice', '#compile-status']) {
     elements.set(selector, {value: '', textContent: '', hidden: false,
       classList: {toggle() {}}});
   }
